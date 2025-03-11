@@ -1,0 +1,14 @@
+{
+  "name": "20251c-individual",
+  "version": "1.0.0",
+  "description": "TP0 ---",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}
