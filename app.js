@@ -18,7 +18,7 @@ const logger = winston.createLogger({
 // This middleware is for req.body to work
 app.use(express.json());
 
-// usar un uuid
+// TODO: usar un uuid
 let id = 0;
 
 const courses = new Map();
@@ -32,16 +32,16 @@ app.post('/courses', (req, res) => {
     res.status(400).json(
       {type: 'about:blank', 
         title: 'Bad Request', 
-        status: 400, 
+        status: res.statusCode, 
         detail: 'Title and description are required', 
         instance: req.url}
     );
 
-    logger.error('Post /courses request without title or description');
+    logger.error('POST /courses failed: missing title or description in request body');
     return;
   }
 
-  id++; // uuid
+  id++; // TODO: uuid
   const data = {id, title, description};
 
   courses.set(id, {title, description});
@@ -49,6 +49,17 @@ app.post('/courses', (req, res) => {
   res.status(201).json(data);
   logger.info(`Course created: ${title}`);
 })
+
+app.get('/courses', (req, res) => {
+  const data = Array.from(courses.entries()).map(([id, course]) => ({
+    id,
+    title: course.title,
+    description: course.description
+  }));
+
+  res.status(200).json({data});
+  logger.info('GET /courses');
+});
 
 app.listen(port, () => {
   logger.info(`App listening on port ${port}`)
