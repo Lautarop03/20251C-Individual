@@ -32,7 +32,7 @@ app.post('/courses', (req, res) => {
     res.status(400).json(
       {type: 'about:blank', 
         title: 'Bad Request', 
-        status: res.statusCode, 
+        status: 400, 
         detail: 'Title and description are required', 
         instance: req.url}
     );
@@ -46,7 +46,7 @@ app.post('/courses', (req, res) => {
 
   courses.set(id, {title, description});
 
-  res.status(201).json(data);
+  res.status(201).json({data});
   logger.info(`Course created: ${title}`);
 })
 
@@ -59,6 +59,41 @@ app.get('/courses', (req, res) => {
 
   res.status(200).json({data});
   logger.info('GET /courses');
+});
+
+app.get('/courses/:id', (req, res) => {
+  try {
+    const id = Number(req.params.id);
+
+    if (!courses.has(id)) {
+      res.status(404).json(
+        {type: 'about:blank', 
+          title: 'Not Found', 
+          status: 404, 
+          detail: 'Course not found', 
+          instance: req.url}
+      );
+
+      logger.error('GET /courses/:id failed: course not found');
+      return;
+    } 
+
+    const course = courses.get(id)
+    const data = {id, ...course};
+    res.status(200).json({data});
+    logger.info(`GET /courses/${id}`);
+
+  } catch (error) {
+    res.status(500).json(
+      {type: 'about:blank', 
+        title: 'Internal Server Error', 
+        status: 500, 
+        detail: error.message, 
+        instance: req.url}
+    );
+
+    logger.error('GET /courses/:id failed: internal server error');
+  }
 });
 
 app.listen(port, () => {
