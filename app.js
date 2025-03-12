@@ -1,5 +1,6 @@
 const express = require("express");
 const winston = require("winston");
+require("dotenv").config();
 
 const app = express()
 const port = process.env.PORT
@@ -25,7 +26,10 @@ let id = 0;
 const courses = new Map();
 
 // TODO: Documenta funciones y clases siguiendo el estándar del lenguaje elegido.
+// TODO: Asegúrate de probar cada endpoint con al menos una prueba E2E (End to End) o de integración, de manera que las pruebas sean claras y descriptivas en su propósito.
+// TODO: Para un manejo más eficiente y estructurado de la información, se recomienda utilizar una base de datos para el almacenamiento de los datos.
 
+// Creates a new course and stores it in memory.
 app.post('/courses', (req, res) => {
   const {title, description} = req.body;
 
@@ -51,8 +55,9 @@ app.post('/courses', (req, res) => {
   logger.info(`Course created: ${title}, ID: ${id}`);
 })
 
+// Returns all courses in reverse chronological order.
 app.get('/courses', (req, res) => {
-  const data = Array.from(courses.entries()).map(([id, course]) => ({
+  const data = Array.from(courses.entries()).map(([id, course]) => ({ // mostrar en orden cronológico inverso
     id,
     title: course.title,
     description: course.description
@@ -84,6 +89,7 @@ const handleInternalServerError = (res, req, error) => {
   );
 };
 
+// Returns a course by its ID.
 app.get('/courses/:id', (req, res) => {
   try {
     const id = Number(req.params.id);
@@ -107,6 +113,7 @@ app.get('/courses/:id', (req, res) => {
   }
 });
 
+// Deletes a course by its ID.
 app.delete('/courses/:id', (req, res) => {
   try {
     const id = Number(req.params.id);
@@ -130,3 +137,5 @@ app.delete('/courses/:id', (req, res) => {
 app.listen(port, () => {
   logger.info(`App listening on port ${port}`)
 })
+
+module.exports = app;
