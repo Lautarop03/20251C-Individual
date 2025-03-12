@@ -21,6 +21,8 @@ app.use(express.json());
 // usar un uuid
 let id = 0;
 
+const courses = new Map();
+
 // Documenta funciones y clases siguiendo el estándar del lenguaje elegido.
 
 // Variables de entorno en otro archivo ¿.env?
@@ -29,7 +31,6 @@ app.post('/courses', (req, res) => {
   const {title, description} = req.body;
 
   if (!title || !description) { // esta condicion es suficiente?
-    // Las respuestas de error deben seguir el RFC 7807 (**). Para este proyecto, por la complejidad, el campo type debe ser about:blank.
     res.status(400).json(
       {type: 'about:blank', 
         title: 'Bad Request', 
@@ -42,10 +43,10 @@ app.post('/courses', (req, res) => {
     return;
   }
 
-  // persistir en memoria
-
   id++; // uuid
   const data = {id, title, description};
+
+  courses.set(id, {title, description});
 
   res.status(201).json(data);
   logger.info(`Course created: ${title}`);
