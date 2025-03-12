@@ -48,7 +48,7 @@ app.post('/courses', (req, res) => {
   courses.set(id, {title, description});
 
   res.status(201).json({data});
-  logger.info(`Course created: ${title}`);
+  logger.info(`Course created: ${title}, ID: ${id}`);
 })
 
 app.get('/courses', (req, res) => {
@@ -91,7 +91,7 @@ app.get('/courses/:id', (req, res) => {
     if (!courses.has(id)) {
       handleCourseNotFound(res, req);
 
-      logger.error('GET /courses/:id failed: course not found');
+      logger.error(`GET /courses/${id} failed: course not found`);
       return;
     }
 
@@ -103,7 +103,7 @@ app.get('/courses/:id', (req, res) => {
   } catch (error) {
     handleInternalServerError(res, req, error);
 
-    logger.error('GET /courses/{id} failed: internal server error');
+    logger.error(`GET /courses/${id} failed: internal server error`);
   }
 });
 
@@ -114,16 +114,16 @@ app.delete('/courses/:id', (req, res) => {
     if (!courses.delete(id)) {
       handleCourseNotFound(res, req);
 
-      logger.error('DELETE /courses/:id failed: course not found');
+      logger.error(`DELETE /courses/${id} failed: course not found`);
       return;
     }
 
     res.status(204).send();
-    logger.info('DELETE /courses/:id');
+    logger.info(`DELETE /courses/${id}`);
   } catch (error) {
     handleInternalServerError(res, req, error);
 
-    logger.error('DELETE /courses/{id} failed: internal server error');
+    logger.error(`DELETE /courses/${id} failed: internal server error`);
   }
 });
 
