@@ -97,3 +97,45 @@ describe('GET /courses/:id', () => {
     expect(response.body).toHaveProperty('instance');
   });
 });
+
+describe('DELETE /courses/:id', () => {
+  it('should delete a course by id and return 204', async () => {
+    const newCourse = {
+      title: "Test Course",
+      description: "Test Description"
+    };
+
+    // Create a course first
+    const postResponse = await request(app)
+      .post('/courses')
+      .send(newCourse)
+
+    const courseId = postResponse.body.data.id;
+
+    // Delete the course
+    const deleteResponse = await request(app)
+      .delete(`/courses/${courseId}`)
+
+    expect(deleteResponse.statusCode).toBe(204);
+
+    // Verify that it no longer exists
+    const getResponse = await request(app)
+      .get(`/courses/${courseId}`)
+
+    expect(getResponse.statusCode).toBe(404);
+  });
+
+  it('should return 404 if course to delete is not found', async () => {
+    const fakeId = '0';
+
+    const response = await request(app)
+      .delete(`/courses/${fakeId}`)
+
+    expect(response.statusCode).toBe(404);
+    expect(response.body).toHaveProperty('type');
+    expect(response.body).toHaveProperty('title');
+    expect(response.body).toHaveProperty('status');
+    expect(response.body).toHaveProperty('detail');
+    expect(response.body).toHaveProperty('instance');
+  });
+});
