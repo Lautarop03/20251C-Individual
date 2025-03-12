@@ -2,7 +2,7 @@ const express = require("express");
 const winston = require("winston");
 
 const app = express()
-const port = 3000 // ENV
+const port = process.env.PORT
 
 const logger = winston.createLogger({
   level: 'info',
@@ -23,9 +23,7 @@ let id = 0;
 
 const courses = new Map();
 
-// Documenta funciones y clases siguiendo el estándar del lenguaje elegido.
-
-// Variables de entorno en otro archivo ¿.env?
+// TODO: Documenta funciones y clases siguiendo el estándar del lenguaje elegido.
 
 app.post('/courses', (req, res) => {
   const {title, description} = req.body;
