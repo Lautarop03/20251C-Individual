@@ -34,3 +34,28 @@ describe("POST /courses", () => {
       expect(res.body).toHaveProperty('instance');
 });
 });
+
+describe('GET /courses', () => {
+  it('should return all courses and return 200 with an array', async () => {
+    const newCourse = {
+      title: 'Test Course',
+      description: 'Test Description'
+    };
+
+    await request(app)
+      .post('/courses')
+      .send(newCourse)
+      
+    const response = await request(app)
+      .get('/courses')
+
+    expect(response.statusCode).toBe(200);
+    expect(response.body).toHaveProperty('data');
+    expect(Array.isArray(response.body.data)).toBe(true);
+
+    const found = response.body.data.find(course => course.title === newCourse.title);
+    expect(found).toBeDefined();
+    expect(found).toHaveProperty('id');
+    expect(found.description).toBe(newCourse.description);
+  });
+});
