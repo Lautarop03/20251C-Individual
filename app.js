@@ -33,7 +33,7 @@ const courses = new Map();
 app.post('/courses', (req, res) => {
   const {title, description} = req.body;
 
-  if (!title || !description) { // esta condicion es suficiente?
+  if (!title || !description) { // esta condicion es suficiente? || caso en el que me mandan un body con info de mas
     res.status(400).json(
       {type: 'about:blank', 
         title: 'Bad Request', 
@@ -133,9 +133,5 @@ app.delete('/courses/:id', (req, res) => {
     logger.error(`DELETE /courses/${id} failed: internal server error`);
   }
 });
-
-app.listen(port, () => {
-  logger.info(`App listening on port ${port}`)
-})
 
 module.exports = app;
