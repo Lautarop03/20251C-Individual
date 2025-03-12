@@ -21,6 +21,7 @@ app.use(express.json());
 // TODO: usar un uuid
 let id = 0;
 
+// map to persist data in memory 
 const courses = new Map();
 
 // TODO: Documenta funciones y clases siguiendo el estándar del lenguaje elegido.
@@ -61,22 +62,38 @@ app.get('/courses', (req, res) => {
   logger.info('GET /courses');
 });
 
+// Reusable function to handle the "not found" case
+const handleCourseNotFound = (res, req) => {
+  res.status(404).json({
+    type: 'about:blank',
+    title: 'Not Found',
+    status: 404,
+    detail: 'Course not found',
+    instance: req.url
+  });
+};
+
+// Reusable function to handle the "internal server error" case
+const handleInternalServerError = (res, req, error) => {
+  res.status(500).json(
+    {type: 'about:blank', 
+      title: 'Internal Server Error', 
+      status: 500, 
+      detail: error.message, 
+      instance: req.url}
+  );
+};
+
 app.get('/courses/:id', (req, res) => {
   try {
     const id = Number(req.params.id);
 
     if (!courses.has(id)) {
-      res.status(404).json(
-        {type: 'about:blank', 
-          title: 'Not Found', 
-          status: 404, 
-          detail: 'Course not found', 
-          instance: req.url}
-      );
+      handleCourseNotFound(res, req);
 
       logger.error('GET /courses/:id failed: course not found');
       return;
-    } 
+    }
 
     const course = courses.get(id)
     const data = {id, ...course};
@@ -84,15 +101,29 @@ app.get('/courses/:id', (req, res) => {
     logger.info(`GET /courses/${id}`);
 
   } catch (error) {
-    res.status(500).json(
-      {type: 'about:blank', 
-        title: 'Internal Server Error', 
-        status: 500, 
-        detail: error.message, 
-        instance: req.url}
-    );
+    handleInternalServerError(res, req, error);
 
-    logger.error('GET /courses/:id failed: internal server error');
+    logger.error('GET /courses/{id} failed: internal server error');
+  }
+});
+
+app.delete('/courses/:id', (req, res) => {
+  try {
+    const id = Number(req.params.id);
+
+    if (!courses.delete(id)) {
+      handleCourseNotFound(res, req);
+
+      logger.error('DELETE /courses/:id failed: course not found');
+      return;
+    }
+
+    res.status(204).send();
+    logger.info('DELETE /courses/:id');
+  } catch (error) {
+    handleInternalServerError(res, req, error);
+
+    logger.error('DELETE /courses/{id} failed: internal server error');
   }
 });
 
