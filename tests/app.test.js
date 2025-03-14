@@ -1,5 +1,7 @@
 const request = require("supertest");
 const app = require("../app");
+const { NIL: NIL_UUID } = require('uuid');
+
 require("dotenv").config();
 
 const NEWCOURSE = {
@@ -82,10 +84,8 @@ describe('GET /courses/:id', () => {
   });
 
   it('should return 404 if course is not found', async () => {
-    const fakeId = "0";
-
     const response = await request(app)
-      .get(`/courses/${fakeId}`)
+      .get(`/courses/${NIL_UUID}`)
 
     expectErrorResponse(response, 404);
   });
@@ -112,10 +112,8 @@ describe('DELETE /courses/:id', () => {
   });
 
   it('should return 404 if course to delete is not found', async () => {
-    const fakeId = '0';
-
     const response = await request(app)
-      .delete(`/courses/${fakeId}`)
+      .delete(`/courses/${NIL_UUID}`)
 
     expectErrorResponse(response, 404);
   });

@@ -1,16 +1,13 @@
 const express = require("express");
 const winston = require("winston");
+const { v4: uuidv4 } = require('uuid');
 require("dotenv").config();
 
 const app = express()
-const port = process.env.PORT
 
 const logger = winston.createLogger({
   level: 'info',
-  format: winston.format.combine(
-    winston.format.colorize(),
-    winston.format.simple()
-  ),
+  format: winston.format.json(),
   transports: [
     new winston.transports.Console()
   ]
@@ -19,21 +16,16 @@ const logger = winston.createLogger({
 // This middleware is for req.body to work
 app.use(express.json());
 
-// TODO: usar un uuid
-let id = 0;
-
 // map to persist data in memory 
 const courses = new Map();
 
-// TODO: Documenta funciones y clases siguiendo el estándar del lenguaje elegido.
-// TODO: Asegúrate de probar cada endpoint con al menos una prueba E2E (End to End) o de integración, de manera que las pruebas sean claras y descriptivas en su propósito.
 // TODO: Para un manejo más eficiente y estructurado de la información, se recomienda utilizar una base de datos para el almacenamiento de los datos.
 
 // Creates a new course and stores it in memory.
 app.post('/courses', (req, res) => {
   const {title, description} = req.body;
 
-  if (!title || !description) { // esta condicion es suficiente? || caso en el que me mandan un body con info de mas
+  if (!title || !description) { // esta condicion es suficiente? || caso en el que me mandan un body con info de mas?
     res.status(400).json(
       {type: 'about:blank', 
         title: 'Bad Request', 
@@ -46,7 +38,8 @@ app.post('/courses', (req, res) => {
     return;
   }
 
-  id++; // TODO: uuid
+  const id = uuidv4(); // Generates a unique ID for the course
+
   const data = {id, title, description};
 
   courses.set(id, {title, description});
@@ -92,7 +85,7 @@ const handleInternalServerError = (res, req, error) => {
 // Returns a course by its ID.
 app.get('/courses/:id', (req, res) => {
   try {
-    const id = Number(req.params.id);
+    const id = req.params.id;
 
     if (!courses.has(id)) {
       handleCourseNotFound(res, req);
@@ -116,7 +109,7 @@ app.get('/courses/:id', (req, res) => {
 // Deletes a course by its ID.
 app.delete('/courses/:id', (req, res) => {
   try {
-    const id = Number(req.params.id);
+    const id = req.params.id;
 
     if (!courses.delete(id)) {
       handleCourseNotFound(res, req);
