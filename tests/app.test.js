@@ -118,3 +118,29 @@ describe('DELETE /courses/:id', () => {
     expectErrorResponse(response, 404);
   });
 });
+
+describe("min and max lenght description", () => {
+  it("should return 400 if the description length is < 50", async () => {
+    const course = {
+      title: "Test Course",
+      description: "Short desc" // invalid length description
+    };
+    const res = await request(app)
+      .post("/courses")
+      .send(course);
+
+    expectErrorResponse(res, 400);
+  });
+
+  it('should return 400 if the description length is > 255', async () => {
+    const course = {
+      title: "Test Course",
+      description: "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem."
+    }; // invalid length description
+    const res = await request(app)
+      .post("/courses")
+      .send(course);
+
+    expectErrorResponse(res, 400);  
+  });
+});
