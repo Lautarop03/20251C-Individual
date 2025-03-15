@@ -20,7 +20,7 @@ Este proyecto consiste en el desarrollo de una API RESTful para gestionar cursos
 
 ## Desafíos del proyecto
 
-Parte de configurar docker ya que nunca lo habia armado desde 0 y la bdd
+Uno de los principales desafíos fue configurar Docker, ya que fue la primera vez que lo armé desde cero. Costó entender bien para qué sirve cada parte, cómo levantar correctamente el servicio.
 
 ---
 
@@ -28,21 +28,19 @@ Parte de configurar docker ya que nunca lo habia armado desde 0 y la bdd
 
 Para levantar el entorno de desarrollo es necesario tener instalado:
 
-- **Node.js** v22.x LTS
+- **Node.js** v22 LTS
 - **npm** v10
 - **Docker** v28
-- **Base de datos**: ...
-
-Variables de entorno necesarias:
-
-PORT=8080 
-ENVIRONMENT=development
 
 ## Testing
 
 Las pruebas automatizadas fueron desarrolladas utilizando [Jest](https://jestjs.io/docs/getting-started) y [Supertest](https://www.npmjs.com/package/supertest).
 
+Para ejecutarlas, simplemente correr:
 
+```bash
+npm start
+```
 ## Docker
 ### Construcción de la imagen
 
@@ -50,8 +48,10 @@ Desde la raíz del proyecto, ejecutar:
 
 ```bash
 docker build --no-cache -t app.js .
-docker run -p 3000:3000 app.js:latest
+docker run -p 8080:8080 app.js:latest
 ```
 
-### Correr la base de datos
 ### Correr el servicio
+
+El servicio se inicia junto con el contenedor generado. Verificar que el puerto esté correctamente expuesto (por defecto 8080).
+
