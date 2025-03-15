@@ -1,9 +1,10 @@
 const express = require("express");
 const winston = require("winston");
 const { v4: uuidv4 } = require('uuid');
+const Ajv = require("ajv")
 require("dotenv").config();
 
-const app = express()
+const app = express();
 
 const logger = winston.createLogger({
   level: 'info',
@@ -13,28 +14,39 @@ const logger = winston.createLogger({
   ]
 });
 
+// Middleware to check if the request body is valid
+const ajv = new Ajv();
+const schema = {
+  type: 'object',
+  properties: {
+    title: { type: 'string' },
+    description: { type: 'string' }
+  },
+  required: ['title', 'description'],
+  additionalProperties: false // Additional properties are not allowed
+};
+const validate = ajv.compile(schema);
+
 // This middleware is for req.body to work
 app.use(express.json());
 
 // map to persist data in memory 
 const courses = new Map();
 
-// TODO: Para un manejo más eficiente y estructurado de la información, se recomienda utilizar una base de datos para el almacenamiento de los datos.
-
 // Creates a new course and stores it in memory.
 app.post('/courses', (req, res) => {
   const {title, description} = req.body;
-
-  if (!title || !description) { // esta condicion es suficiente? || caso en el que me mandan un body con info de mas?
+  
+  if (!validate(req.body)) {
     res.status(400).json(
       {type: 'about:blank', 
         title: 'Bad Request', 
         status: 400, 
-        detail: 'Title and description are required', 
+        detail: 'Invalid request body', 
         instance: req.url}
     );
 
-    logger.error('POST /courses failed: missing title or description in request body');
+    logger.error('POST /courses failed: Invalid request body');
     return;
   }
 
