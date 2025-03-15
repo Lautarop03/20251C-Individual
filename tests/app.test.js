@@ -6,7 +6,7 @@ require("dotenv").config();
 
 const NEWCOURSE = {
   title: "Test Course",
-  description: "Test Description"
+  description: "Lorem ipsum dolor sit amet, consectetuer adipiscing elit."
 };
 
 const createCourse = async () => {
