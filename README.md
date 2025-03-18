@@ -3,26 +3,28 @@
 ## Tabla de Contenidos
 - [Introducción](#introducción)
 - [Desafíos del proyecto](#desafíos-del-proyecto)
+- [Decisiones de diseño](#decisiones-de-diseño)
 - [Pre-requisitos](#pre-requisitos)
 - [Testing](#testing)
 - [Docker](#docker)
   - [Construcción de la imagen](#construcción-de-la-imagen)
-  - [Correr la base de datos](#correr-la-base-de-datos)
   - [Correr el servicio](#correr-el-servicio)
-
----
 
 ## Introducción
 
 Este proyecto consiste en el desarrollo de una API RESTful para gestionar cursos en la plataforma ClassConnect. La solución permite crear, obtener todos, obtener por ID y eliminar cursos.
 
----
 
 ## Desafíos del proyecto
 
-Uno de los principales desafíos fue configurar Docker, ya que fue la primera vez que lo armé desde cero. Costó entender bien para qué sirve cada parte, cómo levantar correctamente el servicio.
+* Uno de los principales desafíos fue configurar Docker, ya que fue la primera vez que lo armé desde cero. Costó entender bien para qué sirve cada parte y cómo levantar correctamente el servicio.
+* Intenté agregar una base de datos, pero no logré que se iniciara correctamente. Probé varias cosas, pero no pude hacer que funcione bien junto con el resto del servicio.
 
----
+## Decisiones de diseño
+
+* Arme una estructura en layers, separando lo que es lógica de aplicación(app.js), manejo de datos(db.js), middlewares y el servicio. Esto ayuda a que el código sea más claro y fácil de escalar en caso de utilizarlo como base para el siguiente TP.
+
+* Aunque ahora no estoy usando una base de datos real, armé un un wrapper para manejar los datos. La razon es que cuando implemente una base de datos como MongoDB o PostgreSQL, no tenga que modificar todo el código principal. Así solo cambio lo que está dentro de esa capa y el resto sigue funcionando igual.
 
 ## Pre-requisitos
 
