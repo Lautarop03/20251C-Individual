@@ -1,10 +1,10 @@
-const express = require("express");
-const { v4: uuidv4 } = require('uuid');
-require("dotenv").config();
+const express = require('express');
+const {v4: uuidv4} = require('uuid');
+require('dotenv').config();
 
-const { logger, validate } = require("./middlewares");
+const {logger, validate} = require('./middlewares');
 
-const Database = require("./db");
+const Database = require('./db');
 
 const app = express();
 app.use(express.json());
@@ -12,25 +12,25 @@ app.use(express.json());
 // Creates a new course and stores it in memory.
 app.post('/courses', (req, res) => {
   const {title, description} = req.body;
-  
+
   if (!validate(req.body)) {
-    res.status(400).json(
-      {type: 'about:blank', 
-        title: 'Bad Request', 
-        status: 400, 
-        detail: 'Invalid request body', 
-        instance: req.url}
-    );
+    res.status(400).json({
+      type: 'about:blank',
+      title: 'Bad Request',
+      status: 400,
+      detail: 'Invalid request body',
+      instance: req.url
+    });
 
     logger.error('POST /courses failed: Invalid request body');
     return;
   }
 
-  const id = uuidv4(); // Generates a unique ID for the course
+  const id = uuidv4();  // Generates a unique ID for the course
 
   const data = {id, title, description};
 
-  Database.create(data); // Persist the course in memory
+  Database.create(data);  // Persist the course in memory
 
   res.status(201).json({data});
   logger.info(`Course created: ${title}, ID: ${id}`);
@@ -57,13 +57,13 @@ const handleCourseNotFound = (res, req) => {
 
 // Reusable function to handle the "internal server error" case
 const handleInternalServerError = (res, req, error) => {
-  res.status(500).json(
-    {type: 'about:blank', 
-      title: 'Internal Server Error', 
-      status: 500, 
-      detail: error.message, 
-      instance: req.url}
-  );
+  res.status(500).json({
+    type: 'about:blank',
+    title: 'Internal Server Error',
+    status: 500,
+    detail: error.message,
+    instance: req.url
+  });
 };
 
 // Returns a course by its ID.
