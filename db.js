@@ -5,8 +5,8 @@ const Database = {
   // Returns all courses in reverse chronological order.
   getAll: () => {
     return Array.from(courses.entries())
+        .reverse() // reverse the chronological order
         .map(([id, course]) => ({
-               // TODO: mostrar en orden cronológico inverso
                id,
                title: course.title,
                description: course.description
