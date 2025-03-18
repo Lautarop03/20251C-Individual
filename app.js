@@ -30,7 +30,6 @@ app.post('/courses', (req, res) => {
 
   const data = {id, title, description};
 
-  //courses.set(id, {title, description});
   Database.create(data); // Persist the course in memory
 
   res.status(201).json({data});
@@ -39,11 +38,6 @@ app.post('/courses', (req, res) => {
 
 // Returns all courses in reverse chronological order.
 app.get('/courses', (req, res) => {
-  /*const data = Array.from(courses.entries()).map(([id, course]) => ({ // TODO: mostrar en orden cronológico inverso
-    id,
-    title: course.title,
-    description: course.description
-  }));*/
   const data = Database.getAll();
 
   res.status(200).json({data});
@@ -84,8 +78,8 @@ app.get('/courses/:id', (req, res) => {
       return;
     }
 
-    //const course = courses.get(id)
     const course = Database.getById(id);
+
     const data = {id, ...course};
     res.status(200).json({data});
     logger.info(`GET /courses/${id}`);
