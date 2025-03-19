@@ -38,10 +38,14 @@ Para levantar el entorno de desarrollo es necesario tener instalado:
 
 Las pruebas automatizadas fueron desarrolladas utilizando [Jest](https://jestjs.io/docs/getting-started) y [Supertest](https://www.npmjs.com/package/supertest).
 
-Para ejecutarlas, simplemente correr:
 
+Para instalar las dependecias necesarias:
 ```bash
-npm start
+npm install
+```
+Para ejecutar las pruebas:
+```bash
+npm test
 ```
 ## Docker
 ### Construcción de la imagen
@@ -49,8 +53,8 @@ npm start
 Desde la raíz del proyecto, ejecutar:
 
 ```bash
-docker build --no-cache -t app.js .
-docker run -p 8080:8080 app.js:latest
+docker build --no-cache -t app-image:v1 .
+docker run -p 8080:8080 app-image:v1
 ```
 
 ### Correr el servicio
